@@ -7,8 +7,8 @@ app = Flask(__name__)
 
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'admin'
-app.config['MYSQL_DATABASE_DB'] = 'teste'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'mudar123'
+app.config['MYSQL_DATABASE_DB'] = 'acimpacta'
 app.config['MYSQL_DATABASE_HOST'] = 'db'
 mysql.init_app(app)
 
@@ -19,12 +19,12 @@ def main():
 @app.route('/gravar', methods=['POST','GET'])
 def gravar():
   nome = request.form['nome']
-  preco = request.form['preco']
   categoria = request.form['categoria']
-  if nome and preco and categoria:
+  preco = request.form['preco']
+  if nome and categoria and preco:
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute('insert into tbl_produto (produto_nome, produto_preco, produto_categoria) VALUES (%s, %s, %s)', (nome, preco, categoria))
+    cursor.execute('insert into produtos (nome, categoria, preco) VALUES (%s, %s, %s)', (nome, categoria, preco))
     conn.commit()
   return render_template('index.html')
 
@@ -33,11 +33,11 @@ def gravar():
 def listar():
   conn = mysql.connect()
   cursor = conn.cursor()
-  cursor.execute('select produto_nome, produto_preco, produto_categoria from tbl_produto')
+  cursor.execute('select nome, categoria, preco from produtos')
   data = cursor.fetchall()
   conn.commit()
   return render_template('lista.html', datas=data)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5008))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
